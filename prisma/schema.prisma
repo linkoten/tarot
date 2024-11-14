@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  email       String   @unique
+  name        String?
+  image       String?
+  posts       Post[]
+  createdAt   DateTime @default(now())
+  updateAt    DateTime @updatedAt
+  clerkUserId String?  @unique
+  Joueur      Joueur[]
+}
+
+model Post {
+  id        Int     @id @default(autoincrement())
+  title     String
+  content   String?
+  published Boolean @default(false)
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  Int
+}
+
+model Carte {
+  id        Int      @id @default(autoincrement())
+  nom       String
+  valeur    String?
+  couleur   Couleur?
+  bout      Boolean
+  atout     Boolean
+  image1    String?
+  image2    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  points    Decimal  @db.Decimal(3, 1)
+  Pli       Pli[]
+  Chien     Chien?   @relation(fields: [chienId], references: [id])
+  chienId   Int?
+}
+
+model Partie {
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  manches       Manche[]
+  joueurs       Joueur[]
+  nombreJoueurs Int      @db.SmallInt
+}
+
+model Joueur {
+  id             Int      @id @default(autoincrement())
+  user           User     @relation(fields: [userId], references: [id])
+  userId         Int
+  partie         Partie   @relation(fields: [partieId], references: [id])
+  partieId       Int
+  manches        Manche[]
+  pseudo         String?
+  score          Int      @default(0)
+  manchesPreneur Manche[] @relation("Preneur")
+  plisGagnes     Pli[]    @relation("GagnantPli")
+}
+
+model Manche {
+  id              Int      @id @default(autoincrement())
+  partie          Partie   @relation(fields: [partieId], references: [id])
+  partieId        Int
+  joueurs         Joueur[]
+  preneur         Joueur   @relation("Preneur", fields: [preneurId], references: [id])
+  preneurId       Int
+  pliPreneur      Pli      @relation("PliPreneur", fields: [pliPreneurId], references: [id])
+  pliPreneurId    Int      @unique
+  pliDefenseurs   Pli      @relation("PliDefenseurs", fields: [pliDefenseursId], references: [id])
+  pliDefenseursId Int      @unique
+  points          Int
+  scorePreneur    Int
+  scoreDefenseurs Int
+  contrat         CONTRAT
+  chien           Chien?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  resultat        RESULTAT
+}
+
+model Pli {
+  id                 Int     @id @default(autoincrement())
+  manchePreneur      Manche? @relation("PliPreneur")
+  manchePreneurId    Int?    @unique
+  mancheDefenseurs   Manche? @relation("PliDefenseurs")
+  mancheDefenseursId Int?    @unique
+  cartes             Carte[]
+  points             Decimal @db.Decimal(4, 1)
+  gagnant            Joueur? @relation("GagnantPli", fields: [gagnantId], references: [id])
+  gagnantId          Int?
+}
+
+model Chien {
+  id           Int     @id @default(autoincrement())
+  manche       Manche  @relation(fields: [mancheId], references: [id])
+  mancheId     Int     @unique
+  cartes       Carte[]
+  nombreCartes Int
+  scoreChien   Decimal @db.Decimal(4, 1)
+}
+
+enum Couleur {
+  PIQUE
+  COEUR
+  TREFLE
+  CARREAU
+  ATOUT
+  EXCUSE
+}
+
+enum CONTRAT {
+  PRISE
+  GARDE
+  GARDESANS
+  GARDECONTRE
+}
+
+enum RESULTAT {
+  GAGNE
+  PERDU
+}
