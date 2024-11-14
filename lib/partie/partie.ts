@@ -1,4 +1,4 @@
-import { prisma } from "../db";
+/* import { prisma } from "../db";
 
 async function updateScoresAfterManche(mancheId: number) {
   const manche = await prisma.manche.findUnique({
@@ -25,3 +25,4 @@ async function updateScoresAfterManche(mancheId: number) {
     });
   }
 }
+ */
