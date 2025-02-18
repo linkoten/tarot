@@ -7,6 +7,7 @@ export const addUserToDatabase = async (
   image: string
 ) => {
   try {
+    console.log("data", clerkUserId, name, email);
     const user = await prisma.user.upsert({
       where: { clerkUserId },
       update: {
@@ -45,3 +46,15 @@ export const getUserFromDatabase = async (clerkUserId: string) => {
     throw error;
   }
 };
+
+export async function getUserByClerkId(clerkUserId: string) {
+  const user = await prisma.user.findUnique({
+    where: { clerkUserId },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  return user;
+}

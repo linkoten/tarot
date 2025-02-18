@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,105 +8,162 @@ datasource db {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(cuid())
   email       String   @unique
   name        String?
   image       String?
-  posts       Post[]
   createdAt   DateTime @default(now())
-  updateAt    DateTime @updatedAt
+  updatedAt   DateTime @updatedAt
   clerkUserId String?  @unique
   Joueur      Joueur[]
 }
 
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
-}
-
 model Carte {
-  id        Int      @id @default(autoincrement())
-  nom       String
-  valeur    String?
-  couleur   Couleur?
-  bout      Boolean
-  atout     Boolean
-  image1    String?
-  image2    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  points    Decimal  @db.Decimal(3, 1)
-  Pli       Pli[]
-  Chien     Chien?   @relation(fields: [chienId], references: [id])
-  chienId   Int?
+  id             Int           @id @default(autoincrement())
+  nom            String
+  couleur        Couleur?
+  bout           Boolean
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  atout          Boolean
+  image1         String?
+  image2         String?
+  chienId        Int?
+  joueurId       String?
+  valeur         Int?
+  pliDefenseurId Int?
+  pliPreneurId   Int?
+  mancheId       Int?
+  currentPliId   Int?
+  points         Float
+  ordre          Int?
+  Chien          Chien?        @relation(fields: [chienId], references: [id])
+  CurrentPli     CurrentPli?   @relation(fields: [currentPliId], references: [id])
+  joueur         Joueur?       @relation("JoueurCartes", fields: [joueurId], references: [id])
+  PliDefenseur   PliDefenseur? @relation(fields: [pliDefenseurId], references: [id])
+  PliPreneur     PliPreneur?   @relation(fields: [pliPreneurId], references: [id])
 }
 
 model Partie {
-  id            Int      @id @default(autoincrement())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  manches       Manche[]
-  joueurs       Joueur[]
-  nombreJoueurs Int      @db.SmallInt
+  id             Int            @id @default(autoincrement())
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  nombreJoueurs  Int            @db.SmallInt
+  donneur        Int            @default(0)
+  status         String         @default("EN_ATTENTE")
+  tourActuel     Int            @default(0)
+  mancheActuelle Int            @default(1)
+  actionsJoueurs ActionJoueur[]
+  invitations    Invitation[]
+  joueurs        Joueur[]
+  manches        Manche[]
 }
 
 model Joueur {
-  id             Int      @id @default(autoincrement())
-  user           User     @relation(fields: [userId], references: [id])
-  userId         Int
-  partie         Partie   @relation(fields: [partieId], references: [id])
-  partieId       Int
-  manches        Manche[]
-  pseudo         String?
-  score          Int      @default(0)
-  manchesPreneur Manche[] @relation("Preneur")
-  plisGagnes     Pli[]    @relation("GagnantPli")
+  id                   String         @id @default(cuid())
+  userId               String
+  partieId             Int
+  pseudo               String?
+  score                Int            @default(0)
+  seatIndex            Int
+  actionsJoueurs       ActionJoueur[]
+  cartes               Carte[]        @relation("JoueurCartes")
+  partie               Partie         @relation(fields: [partieId], references: [id])
+  user                 User           @relation(fields: [userId], references: [id])
+  manchesPreneur       Manche[]       @relation("Preneur")
+  plisPreneurGagnes    PliPreneur[]   @relation("GagnantPliPreneur")
+  currentPlis          CurrentPli[]   @relation("CurrentPliToJoueur")
+  manches              Manche[]       @relation("JoueurToManche")
+  plisDefenseursGagnes PliDefenseur[] @relation("JoueurToPliDefenseur")
+}
+
+model ActionJoueur {
+  id        Int      @id @default(autoincrement())
+  partieId  Int
+  joueurId  String
+  createdAt DateTime @default(now())
+  action    CONTRAT?
+  mancheId  Int
+  joueur    Joueur   @relation(fields: [joueurId], references: [id])
+  manche    Manche   @relation(fields: [mancheId], references: [id])
+  partie    Partie   @relation(fields: [partieId], references: [id])
 }
 
 model Manche {
-  id              Int      @id @default(autoincrement())
-  partie          Partie   @relation(fields: [partieId], references: [id])
+  id              Int            @id @default(autoincrement())
   partieId        Int
-  joueurs         Joueur[]
-  preneur         Joueur   @relation("Preneur", fields: [preneurId], references: [id])
-  preneurId       Int
-  pliPreneur      Pli      @relation("PliPreneur", fields: [pliPreneurId], references: [id])
-  pliPreneurId    Int      @unique
-  pliDefenseurs   Pli      @relation("PliDefenseurs", fields: [pliDefenseursId], references: [id])
-  pliDefenseursId Int      @unique
-  points          Int
-  scorePreneur    Int
+  preneurId       String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  contrat         CONTRAT?
+  resultat        RESULTAT?
   scoreDefenseurs Int
-  contrat         CONTRAT
+  scorePreneur    Int
+  chelemAnnonce   Boolean        @default(false)
+  chelemRealise   Boolean        @default(false)
+  petitAuBout     Boolean        @default(false)
+  poigneeAnnoncee POIGNEE?
+  roiAppele       Couleur?
+  numero          Int            @default(1)
+  status          MANCHESTATUS   @default(CONTRACT)
+  points          Float          @default(0)
+  actionsJoueurs  ActionJoueur[]
   chien           Chien?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  resultat        RESULTAT
+  currentPli      CurrentPli?
+  partie          Partie         @relation(fields: [partieId], references: [id])
+  preneur         Joueur?        @relation("Preneur", fields: [preneurId], references: [id])
+  pliDefenseur    PliDefenseur?
+  pliPreneur      PliPreneur?
+  joueurs         Joueur[]       @relation("JoueurToManche")
 }
 
-model Pli {
-  id                 Int     @id @default(autoincrement())
-  manchePreneur      Manche? @relation("PliPreneur")
-  manchePreneurId    Int?    @unique
-  mancheDefenseurs   Manche? @relation("PliDefenseurs")
-  mancheDefenseursId Int?    @unique
-  cartes             Carte[]
-  points             Decimal @db.Decimal(4, 1)
-  gagnant            Joueur? @relation("GagnantPli", fields: [gagnantId], references: [id])
-  gagnantId          Int?
+model PliPreneur {
+  id        Int       @id @default(autoincrement())
+  mancheId  Int       @unique
+  gagnantId String
+  status    PLISTATUS @default(ENCOURS)
+  points    Float     @default(0)
+  cartes    Carte[]
+  gagnant   Joueur    @relation("GagnantPliPreneur", fields: [gagnantId], references: [id])
+  manche    Manche    @relation(fields: [mancheId], references: [id])
+}
+
+model PliDefenseur {
+  id       Int       @id @default(autoincrement())
+  mancheId Int       @unique
+  status   PLISTATUS @default(ENCOURS)
+  points   Float     @default(0)
+  cartes   Carte[]
+  manche   Manche    @relation(fields: [mancheId], references: [id])
+  gagnants Joueur[]  @relation("JoueurToPliDefenseur")
+}
+
+model CurrentPli {
+  id       Int      @id @default(autoincrement())
+  mancheId Int      @unique
+  cartes   Carte[]
+  manche   Manche   @relation(fields: [mancheId], references: [id])
+  joueurs  Joueur[] @relation("CurrentPliToJoueur")
 }
 
 model Chien {
   id           Int     @id @default(autoincrement())
-  manche       Manche  @relation(fields: [mancheId], references: [id])
   mancheId     Int     @unique
-  cartes       Carte[]
   nombreCartes Int
-  scoreChien   Decimal @db.Decimal(4, 1)
+  pointsChien  Float   @default(0)
+  cartes       Carte[]
+  manche       Manche  @relation(fields: [mancheId], references: [id])
+}
+
+model Invitation {
+  id             String   @id @default(cuid())
+  partieId       Int
+  seatIndex      Int
+  invitedUserId  String
+  invitingUserId String
+  status         String
+  createdAt      DateTime @default(now())
+  partie         Partie   @relation(fields: [partieId], references: [id])
 }
 
 enum Couleur {
@@ -129,9 +180,29 @@ enum CONTRAT {
   GARDE
   GARDESANS
   GARDECONTRE
+  PASSE
 }
 
 enum RESULTAT {
   GAGNE
   PERDU
+}
+
+enum POIGNEE {
+  SIMPLE
+  DOUBLE
+  TRIPLE
+}
+
+enum MANCHESTATUS {
+  CONTRACT
+  ECHANGE
+  GAMEPLAY
+  FINISHED
+}
+
+enum PLISTATUS {
+  ENCOURS
+  DEFENSEURS
+  PRENEUR
 }

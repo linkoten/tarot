@@ -6,9 +6,15 @@ const nextConfig = {
                 protocol: "https",
                 hostname: "img.clerk.com",
                 pathname: '**'
+            },
+            {
+                protocol: "https",
+                hostname: 'i.ibb.co',
+                pathname: '**'
             }
         ]
     }
 };
+
 
 export default nextConfig;

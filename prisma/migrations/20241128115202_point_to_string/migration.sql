@@ -1,0 +1,11 @@
+-- AlterTable
+ALTER TABLE "Carte" ALTER COLUMN "points" SET DATA TYPE TEXT;
+
+-- AlterTable
+ALTER TABLE "Chien" ALTER COLUMN "scoreChien" SET DATA TYPE TEXT;
+
+-- AlterTable
+ALTER TABLE "Manche" ALTER COLUMN "points" SET DATA TYPE TEXT;
+
+-- AlterTable
+ALTER TABLE "Pli" ALTER COLUMN "points" SET DATA TYPE TEXT;
