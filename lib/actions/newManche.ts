@@ -1,8 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { prisma } from "../db";
-import { distributeCards } from "./distributeCards";
 import { Carte, Joueur } from "@prisma/client";
 
 export async function createNewManche(partieId: number) {

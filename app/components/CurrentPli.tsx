@@ -11,9 +11,9 @@ interface CurrentPliProps {
 }
 
 export default function CurrentPli({ pli }: CurrentPliProps) {
-  if (!pli) return null;
-
   const currentPartie = useAppSelector(selectPartie);
+
+  if (!pli) return null;
 
   if (!currentPartie) return;
 

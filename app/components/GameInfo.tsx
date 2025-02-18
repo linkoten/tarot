@@ -30,7 +30,7 @@ export default function GameInfo({ partie }: GameInfoProps) {
       {currentPlayer && (
         <div className="mt-4 p-2 bg-green-800/30 rounded-md">
           <p className="font-bold text-green-400 text-xs">
-            C'est au tour de {currentPlayer.pseudo} de jouer
+            C&apos;est au tour de {currentPlayer.pseudo} de jouer
           </p>
         </div>
       )}

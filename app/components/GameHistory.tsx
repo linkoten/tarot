@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import socket from "../socket";
 import { PartieWithRelations } from "../types/type";
 import { Carte, CONTRAT } from "@prisma/client";
+import Image from "next/image";
 
 interface HistoryAction {
   id: string;
@@ -122,10 +123,12 @@ const GameHistory = ({ partie }: GameHistoryProps) => {
           className="bg-zinc-800/50 p-2 rounded-md flex items-center space-x-2"
         >
           {action.image && (
-            <img
+            <Image
               src={action.image || "/placeholder.svg"}
               alt="Carte jouée"
               className="w-10 h-14 rounded-md"
+              height={56}
+              width={40}
             />
           )}
           <div>

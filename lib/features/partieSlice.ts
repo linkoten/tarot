@@ -5,7 +5,7 @@ import {
   announceContractAction,
   fetchPartieActions,
 } from "./actionJoueursSlice";
-import { ActionJoueur, CONTRAT, Joueur } from "@prisma/client";
+import { ActionJoueur, CONTRAT } from "@prisma/client";
 import { getPartieData } from "../actions/getPartieData";
 import { PartieWithRelations, StartPartieResponse } from "@/app/types/type";
 

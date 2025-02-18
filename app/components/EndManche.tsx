@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 import { fetchPartieData, selectPartie } from "@/lib/features/partieSlice";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { MancheResult } from "./MancheResult";
 import { PartieResult } from "./PartieResult";
 import { calculatePoints } from "@/lib/actions/calculatePoints";
@@ -17,25 +17,19 @@ import { BorderBeam } from "@/components/ui/border-beam";
 
 interface EndMancheProps {
   partieId: number;
-  currentUserId: string;
 }
 
-export default function EndManche({ partieId, currentUserId }: EndMancheProps) {
+export default function EndManche({ partieId }: EndMancheProps) {
   const [activeTab, setActiveTab] = useState("manche");
   const [isCalculating, setIsCalculating] = useState(true);
   const currentPartie = useAppSelector(selectPartie);
   const dispatch = useAppDispatch();
 
-  if (!currentPartie) return;
-
-  const derniereManche =
-    currentPartie.manches[currentPartie.manches.length - 1];
-
   useEffect(() => {
     if (partieId && isCalculating) {
       dispatch(fetchPartieData(partieId))
         .then(() =>
-          calculatePoints(derniereManche.id, currentPartie.nombreJoueurs)
+          calculatePoints(derniereManche.id, currentPartie!.nombreJoueurs)
         )
         .then(() => {
           setIsCalculating(false);
@@ -68,6 +62,11 @@ export default function EndManche({ partieId, currentUserId }: EndMancheProps) {
       socket.off("newMancheAdded", onNewManche);
     };
   }, [dispatch]);
+
+  if (!currentPartie) return;
+
+  const derniereManche =
+    currentPartie.manches[currentPartie.manches.length - 1];
 
   const handleNextManche = async () => {
     if (currentPartie.mancheActuelle < 10) {

@@ -4,11 +4,7 @@ import "./globals.css";
 import StoreProvider from "./StoreProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import Nav from "./components/Nav";
-import { auth } from "@clerk/nextjs/server";
-import { InvitationListener } from "./components/InvitationListener";
 import { Toaster } from "@/components/ui/toaster";
-import { getUserFromDatabase } from "@/services/userService";
-import { redirect } from "next/navigation";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

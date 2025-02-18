@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { invitePlayer } from "@/lib/actions/invitePlayers";
+import Image from "next/image";
 
 interface InviteModalProps {
   isOpen: boolean;
@@ -79,10 +80,12 @@ export function InviteModal({
           {onlineUsers.map((user) => (
             <div key={user.id} className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <img
-                  src={user.image || undefined}
+                <Image
+                  src={user.image as string}
                   alt={user.name || "User"}
                   className="w-10 h-10 rounded-full"
+                  height={40}
+                  width={40}
                 />
                 <span>{user.name}</span>
               </div>

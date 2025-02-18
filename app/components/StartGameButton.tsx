@@ -18,20 +18,6 @@ export default function StartGameButton() {
   const loading = useAppSelector(selectLoading);
   const error = useAppSelector(selectError);
 
-  if (!currentPartie) {
-    console.error("Aucune partie sélectionnée.");
-    return;
-  }
-
-  const startGame = async () => {
-    if (currentPartie.id) {
-      await distributeCards(currentPartie.id);
-      socket.emit("startGame", currentPartie.id);
-      console.log("Game started successfully:");
-      await dispatch(fetchPartieData(currentPartie.id));
-    }
-  };
-
   useEffect(() => {
     function onGameStarted(data: { partieId: number }) {
       console.log("on reçoit les infos de la part du serveur", data.partieId);
@@ -51,6 +37,20 @@ export default function StartGameButton() {
       socket.off("gameStarted", onGameStarted);
     };
   }, [dispatch]);
+
+  if (!currentPartie) {
+    console.error("Aucune partie sélectionnée.");
+    return;
+  }
+
+  const startGame = async () => {
+    if (currentPartie.id) {
+      await distributeCards(currentPartie.id);
+      socket.emit("startGame", currentPartie.id);
+      console.log("Game started successfully:");
+      await dispatch(fetchPartieData(currentPartie.id));
+    }
+  };
 
   return (
     <div>

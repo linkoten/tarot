@@ -36,7 +36,7 @@ export async function calculatePoints(mancheId: number, nombreJoueurs: number) {
 
   if (!manche) throw new Error("Manche not found");
 
-  const { pliPreneur, pliDefenseur, contrat, preneur, joueurs } = manche;
+  const { pliPreneur, contrat, preneur, joueurs } = manche;
   if (!pliPreneur) return;
   const nombreBouts = pliPreneur.cartes.filter((carte) => carte.bout).length;
   console.log("Nombre de bouts:", nombreBouts);

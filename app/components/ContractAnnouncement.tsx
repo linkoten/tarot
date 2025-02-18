@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import PlayerCards from "./PlayerCards";
-import type { CONTRAT } from "@prisma/client";
+import type { CONTRAT, Joueur } from "@prisma/client";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   fetchPartieData,
@@ -13,10 +13,8 @@ import socket from "../socket";
 import { announceContract } from "@/lib/actions/announceContract";
 import { motion } from "framer-motion";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
-import { ShinyButton } from "@/components/magicui/shiny-button";
 
 interface ContractAnnouncementProps {
-  partieId: number;
   currentUserId: string;
 }
 
@@ -29,13 +27,11 @@ const contractOrder: CONTRAT[] = [
 ];
 
 export default function ContractAnnouncement({
-  partieId,
   currentUserId,
 }: ContractAnnouncementProps) {
   const dispatch = useAppDispatch();
   const currentPartie = useAppSelector(selectPartie);
   const lastContract = useAppSelector(selectLastContract);
-  const [message, setMessage] = useState<string | null>(null);
   const [availableContracts, setAvailableContracts] =
     useState<CONTRAT[]>(contractOrder);
 
@@ -87,7 +83,7 @@ export default function ContractAnnouncement({
       await announceContract(currentPartie.id, currentUserId, contract);
       // Ajout des informations du joueur
       const currentPlayer = currentPartie.joueurs.find(
-        (j: any) => j.userId === currentUserId
+        (j: Joueur) => j.userId === currentUserId
       );
       socket.emit("newContract", {
         roomId: currentPartie.id,
@@ -101,7 +97,7 @@ export default function ContractAnnouncement({
 
   const isCurrentPlayerTurn =
     currentPartie?.tourActuel ===
-    currentPartie?.joueurs.findIndex((j: any) => j.userId === currentUserId);
+    currentPartie?.joueurs.findIndex((j: Joueur) => j.userId === currentUserId);
 
   return (
     <motion.div
@@ -128,15 +124,6 @@ export default function ContractAnnouncement({
         ))}
       </div>
       <PlayerCards currentUserId={currentUserId} className=" rounded-lg p-4" />
-      {message && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="mt-4 p-3 bg-white bg-opacity-20 rounded-md text-white"
-        >
-          {message}
-        </motion.div>
-      )}
     </motion.div>
   );
 }

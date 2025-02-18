@@ -20,9 +20,6 @@ export default function GamePlay({ partieId, currentUserId }: GamePlayProps) {
   const [message, setMessage] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const currentManche =
-    currentPartie?.manches[currentPartie.manches.length - 1];
-
   useEffect(() => {
     function onNewCardPlayed(data: { partieId: number }) {
       console.log("La carte a été jouée", data.partieId);

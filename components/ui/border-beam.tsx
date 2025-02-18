@@ -9,7 +9,7 @@ interface BorderBeamProps extends ComponentPropsWithoutRef<"div"> {
   colorFrom?: string;
   colorTo?: string;
   delay?: number;
-  isActive?: Boolean;
+  isActive?: boolean;
 }
 
 export const BorderBeam = ({

@@ -1,12 +1,8 @@
 "use server";
 
 import { prisma } from "../db";
-import { Carte, Couleur } from "@prisma/client";
-import {
-  createDefenseurPli,
-  createPreneurPli,
-  currentPli,
-} from "../features/pliActions";
+import { Carte } from "@prisma/client";
+import { createDefenseurPli, createPreneurPli } from "../features/pliActions";
 
 export async function playCard(
   partieId: number,
@@ -283,7 +279,7 @@ export async function playCard(
 
         await prisma.$transaction(async (tx) => {
           // Récupérer le pli courant s'il existe
-          let currentPli = await tx.currentPli.findUnique({
+          const currentPli = await tx.currentPli.findUnique({
             where: { mancheId: currentManche.id },
             include: { cartes: true }, // Inclure les cartes pour les traiter
           });

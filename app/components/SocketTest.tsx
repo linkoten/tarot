@@ -6,12 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 
 import socket from "../socket";
-import {
-  fetchPartieData,
-  selectPartie,
-  startPartie,
-} from "@/lib/features/partieSlice";
-import { revalidatePath } from "next/cache";
+import { fetchPartieData, selectPartie } from "@/lib/features/partieSlice";
 
 export default function SocketTest({ roomId }: { roomId: number }) {
   const dispatch = useAppDispatch();
@@ -23,11 +18,6 @@ export default function SocketTest({ roomId }: { roomId: number }) {
     Array<{ userId: string; message: string }>
   >([]);
   const currentPartie = useAppSelector(selectPartie);
-
-  if (!currentPartie) {
-    console.error("Aucune partie sélectionnée.");
-    return;
-  }
 
   useEffect(() => {
     function onConnect() {
@@ -80,6 +70,11 @@ export default function SocketTest({ roomId }: { roomId: number }) {
       socket.off("newCardPlayed", onNewCardPlayed); */
     };
   }, []);
+
+  if (!currentPartie) {
+    console.error("Aucune partie sélectionnée.");
+    return;
+  }
 
   const joinRoom = () => {
     if (roomId) {
@@ -154,18 +149,6 @@ export default function SocketTest({ roomId }: { roomId: number }) {
       });
     }
   }; */
-
-  const exchangeChien = () => {
-    if (roomId) {
-      socket.emit("exchangeChien", roomId);
-    }
-  };
-
-  const playCard = () => {
-    if (roomId) {
-      socket.emit("cardPlayed", roomId);
-    }
-  };
 
   return (
     <div className="p-4 hidden">

@@ -1,11 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  CONTRAT,
-  RESULTAT,
-  POIGNEE,
-  Couleur,
-  MANCHESTATUS,
-} from "@prisma/client";
+import { CONTRAT, RESULTAT, POIGNEE, Couleur } from "@prisma/client";
 import { MancheState, MancheWithRelations } from "@/app/types/type";
 
 const initialState: MancheState = {

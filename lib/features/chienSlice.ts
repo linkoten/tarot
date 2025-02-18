@@ -1,9 +1,4 @@
-import {
-  createAsyncThunk,
-  createSlice,
-  isRejectedWithValue,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Chien, Carte } from "@prisma/client";
 import { ChienState } from "@/app/types/type";
 import { handleChien } from "../actions/handleChien";

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import type { EchangeChienProps } from "../types/type";
 import { useToast } from "@/hooks/use-toast";
@@ -12,12 +11,7 @@ import { fetchPartieData, selectPartie } from "@/lib/features/partieSlice";
 import type { Carte, Joueur } from "@prisma/client";
 import socket from "../socket";
 import { handleChien } from "@/lib/actions/handleChien";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
 
 export default function EchangeChien({
@@ -28,33 +22,11 @@ export default function EchangeChien({
 }) {
   const { toast } = useToast();
   const dispatch = useAppDispatch();
-  const [isDialogOpen, setIsDialogOpen] = useState(true);
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
-  const [showChien, setShowChien] = useState(true);
 
   const currentPartie = useAppSelector(selectPartie);
 
-  if (!currentPartie) return null;
-
-  const derniereManche =
-    currentPartie.manches[currentPartie.manches.length - 1];
-
-  const currentPlayer = currentPartie.joueurs.find(
-    (player: Joueur) => player.userId === currentUserId
-  );
-
-  const chienCards = derniereManche.chien?.cartes;
-  const preneurId = derniereManche.preneurId;
-
-  const isPreneur = derniereManche.preneurId === currentPlayer?.id;
-
-  const handleCardClick = (cardId: number) => {
-    if (selectedCards.includes(cardId)) {
-      setSelectedCards(selectedCards.filter((id) => id !== cardId));
-    } else if (selectedCards.length < 6) {
-      setSelectedCards([...selectedCards, cardId]);
-    }
-  };
+  const showChien = true;
 
   useEffect(() => {
     function onNewExchangeChien(data: { partieId: number }) {
@@ -79,6 +51,28 @@ export default function EchangeChien({
       socket.off("newExchangeChien", onNewExchangeChien);
     };
   }, [dispatch]);
+
+  if (!currentPartie) return null;
+
+  const derniereManche =
+    currentPartie.manches[currentPartie.manches.length - 1];
+
+  const currentPlayer = currentPartie.joueurs.find(
+    (player: Joueur) => player.userId === currentUserId
+  );
+
+  const chienCards = derniereManche.chien?.cartes;
+  const preneurId = derniereManche.preneurId;
+
+  const isPreneur = derniereManche.preneurId === currentPlayer?.id;
+
+  const handleCardClick = (cardId: number) => {
+    if (selectedCards.includes(cardId)) {
+      setSelectedCards(selectedCards.filter((id) => id !== cardId));
+    } else if (selectedCards.length < 6) {
+      setSelectedCards([...selectedCards, cardId]);
+    }
+  };
 
   const handleExchange = async () => {
     if (currentPartie.id) {
@@ -150,7 +144,7 @@ export default function EchangeChien({
       </div>
       {selectedCards.length !== 6 && (
         <p className="text-sm text-red-300 mb-2">
-          Veuillez sélectionner exactement 6 cartes pour l'échange.
+          Veuillez sélectionner exactement 6 cartes pour l$&apos;échange.
         </p>
       )}
       {selectedCards.length === 6 && (
@@ -163,7 +157,7 @@ export default function EchangeChien({
         disabled={selectedCards.length !== 6 || !isPreneur}
         className="w-full max-w-md py-2 text-sm font-medium"
       >
-        Valider l'échange
+        Valider l&apos;échange
       </ShimmerButton>
     </motion.div>
   );

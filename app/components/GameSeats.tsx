@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import type { JoueurWithRelations } from "../types/type";
@@ -28,7 +28,6 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { History } from "lucide-react";
 import CardTable from "./CardTable";
-import { BackgroundGradient } from "@/components/ui/background-gradient";
 import { ButtonsCard } from "@/components/ui/buttons-card";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -38,7 +37,6 @@ export default function GameSeats({ currentUserId, onlineUsers }: any) {
   const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const currentPartie = useAppSelector(selectPartie);
-  const [timeLeft, setTimeLeft] = useState(30);
 
   if (!currentPartie) return null;
 
@@ -75,18 +73,6 @@ export default function GameSeats({ currentUserId, onlineUsers }: any) {
           }}
         >
           <div className="relative">
-            {isPlayerTurn && (
-              <motion.div
-                className="absolute inset-0"
-                style={{
-                  border: "2px solid #3b82f6",
-                  borderRadius: "100%",
-                }}
-                initial={{ pathLength: 1 }}
-                animate={{ pathLength: timeLeft / 30 }}
-                transition={{ duration: 1, ease: "linear" }}
-              />
-            )}
             <ShimmerButton
               className="w-14 h-14 rounded-full flex items-center justify-center text-xs"
               onClick={() => handleSeatClick(i, joueur as JoueurWithRelations)}
@@ -131,10 +117,7 @@ export default function GameSeats({ currentUserId, onlineUsers }: any) {
                 {currentPartie.status === "EN_COURS" && (
                   <>
                     {derniereManche?.status === "CONTRACT" && (
-                      <ContractAnnouncement
-                        partieId={currentPartie.id}
-                        currentUserId={currentUserId}
-                      />
+                      <ContractAnnouncement currentUserId={currentUserId} />
                     )}
                     {derniereManche?.status === "ECHANGE" && (
                       <EchangeChien
@@ -149,10 +132,7 @@ export default function GameSeats({ currentUserId, onlineUsers }: any) {
                       />
                     )}
                     {derniereManche?.status === "FINISHED" && (
-                      <EndManche
-                        partieId={currentPartie.id}
-                        currentUserId={currentUserId}
-                      />
+                      <EndManche partieId={currentPartie.id} />
                     )}
                   </>
                 )}
