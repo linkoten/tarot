@@ -304,18 +304,14 @@ export async function annoncePoignee(mancheId: number, poignee: POIGNEE) {
   });
 }
 
-export async function annonceChelem(mancheId: number, joueurId: string) {
+export async function annonceChelem(mancheId: number) {
   return prisma.manche.update({
     where: { id: mancheId },
     data: { chelemAnnonce: true },
   });
 }
 
-export async function annonceRoi(
-  mancheId: number,
-  joueurId: string,
-  couleur: Couleur
-) {
+export async function annonceRoi(mancheId: number, couleur: Couleur) {
   return prisma.manche.update({
     where: { id: mancheId },
     data: { roiAppele: couleur },

@@ -8,12 +8,6 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import socket from "../socket";
 import { fetchPartieData, selectPartie } from "@/lib/features/partieSlice";
 
-interface InvitationResponse {
-  invitation?: {
-    partieId: number;
-  };
-}
-
 export default function SocketTest({ roomId }: { roomId: number }) {
   const dispatch = useAppDispatch();
 
