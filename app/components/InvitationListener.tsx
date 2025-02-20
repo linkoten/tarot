@@ -12,6 +12,12 @@ import socket from "../socket";
 import { fetchPartieData } from "@/lib/features/partieSlice";
 import { useAppDispatch } from "@/lib/hooks";
 
+interface InvitationResponse {
+  invitation?: {
+    partieId: number;
+  };
+}
+
 export function InvitationListener({
   userId,
   userName,
@@ -23,7 +29,7 @@ export function InvitationListener({
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const joinRoom = (response: any) => {
+  const joinRoom = (response: InvitationResponse) => {
     if (response.invitation?.partieId) {
       socket.emit("joinRoom", response.invitation?.partieId);
       console.log("Joining room 2:", response.invitation?.partieId);

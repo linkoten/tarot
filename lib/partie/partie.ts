@@ -2,8 +2,12 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "../db";
 import { revalidatePath } from "next/cache";
-import { CONTRAT, Couleur, POIGNEE } from "@prisma/client";
+import { ActionJoueur, CONTRAT, Couleur, POIGNEE } from "@prisma/client";
 import { PartieWithJoueurs, PartieWithRelations } from "@/app/types/type";
+
+export interface PartieWithRelationsAndActions extends PartieWithRelations {
+  actionsJoueurs: ActionJoueur[];
+}
 
 export async function createGame(
   nombreJoueurs: number
@@ -143,51 +147,58 @@ export async function getPartieById(
   partieId: number
 ): Promise<PartieWithRelations | null> {
   try {
-    // Récupérer la partie avec ses relations
     const partie = await prisma.partie.findUnique({
       where: { id: partieId },
       include: {
         joueurs: {
           include: {
-            cartes: true, // Inclure les cartes de chaque joueur
-            manches: true, // Inclure les manches jouées par chaque joueur
+            cartes: true,
+            plisDefenseursGagnes: true,
+            plisPreneurGagnes: true,
           },
         },
         manches: {
           include: {
-            joueurs: {
-              include: {
-                cartes: true, // Inclure les cartes des joueurs dans chaque manche
-              },
-            },
             chien: {
               include: {
-                cartes: true, // Inclure les cartes du chien
+                cartes: true,
               },
             },
+            pliPreneur: {
+              include: {
+                cartes: true,
+              },
+            },
+            pliDefenseur: {
+              include: {
+                cartes: true,
+              },
+            },
+            currentPli: {
+              include: {
+                cartes: true,
+              },
+            },
+            actionsJoueurs: true,
           },
         },
-        invitations: true, // Inclure les invitations associées
+        invitations: true,
+        actionsJoueurs: true,
       },
     });
 
     if (!partie) {
-      return null; // Retourner null si aucune partie n'a été trouvée
+      return null;
     }
-    // Add actionsJoueurs if it's not included in the Prisma query
-    const partieWithActions: any = {
-      ...partie,
-      actionsJoueurs: [], // You may need to fetch this separately if it's not included in the Prisma model
-    };
 
-    return partieWithActions;
+    return partie as PartieWithRelations;
   } catch (error) {
     console.error("Erreur lors de la récupération de la partie:", error);
     throw new Error("Impossible de récupérer la partie");
   }
 }
 
-export async function findPartie(params: any) {
+/*export async function findPartie(params: any) {
   try {
     const partie = await prisma.partie.findUnique({
       where: { id: parseInt(params.partieId) },
@@ -198,7 +209,7 @@ export async function findPartie(params: any) {
     console.error("Erreur, la partie n'existe pas:", error);
     throw error;
   }
-}
+} */
 
 export async function addUserToPlayer(
   userId: string,
@@ -286,11 +297,7 @@ export async function annonceContrat(
   return manche;
 }
 
-export async function annoncePoignee(
-  mancheId: number,
-  joueurId: string,
-  poignee: POIGNEE
-) {
+export async function annoncePoignee(mancheId: number, poignee: POIGNEE) {
   return prisma.manche.update({
     where: { id: mancheId },
     data: { poigneeAnnoncee: poignee },
@@ -313,14 +320,6 @@ export async function annonceRoi(
     where: { id: mancheId },
     data: { roiAppele: couleur },
   });
-}
-
-export async function terminerManche(mancheId: number) {
-  // TODO: Implémenter la logique pour terminer la manche, calculer les scores, etc.
-}
-
-export async function terminerPartie(partieId: number) {
-  // TODO: Implémenter la logique pour terminer la partie, déterminer le gagnant, etc.
 }
 
 export async function findUserByClerkId(clerkUserId: string) {

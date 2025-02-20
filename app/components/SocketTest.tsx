@@ -8,6 +8,12 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import socket from "../socket";
 import { fetchPartieData, selectPartie } from "@/lib/features/partieSlice";
 
+interface InvitationResponse {
+  invitation?: {
+    partieId: number;
+  };
+}
+
 export default function SocketTest({ roomId }: { roomId: number }) {
   const dispatch = useAppDispatch();
 
@@ -71,11 +77,6 @@ export default function SocketTest({ roomId }: { roomId: number }) {
     };
   }, []);
 
-  if (!currentPartie) {
-    console.error("Aucune partie sélectionnée.");
-    return;
-  }
-
   const joinRoom = () => {
     if (roomId) {
       socket.emit("joinRoom", roomId);
@@ -102,14 +103,9 @@ export default function SocketTest({ roomId }: { roomId: number }) {
 
   const newPlayer = () => {
     if (roomId) {
-      socket.emit("newPlayer", roomId, (response: any) => {
-        if (response.success) {
-          console.log("Nouveau Joueur:", response.data);
-          dispatch(fetchPartieData(roomId)).unwrap();
-        } else {
-          console.error("Error starting game:", response.error);
-        }
-      });
+      socket.emit("newPlayer", roomId);
+      console.log("Nouveau Joueur:", roomId);
+      dispatch(fetchPartieData(roomId)).unwrap();
     }
   };
 
@@ -149,6 +145,11 @@ export default function SocketTest({ roomId }: { roomId: number }) {
       });
     }
   }; */
+
+  if (!currentPartie) {
+    console.error("Aucune partie sélectionnée.");
+    return;
+  }
 
   return (
     <div className="p-4 hidden">

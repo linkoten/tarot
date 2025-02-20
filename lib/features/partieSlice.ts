@@ -5,7 +5,7 @@ import {
   announceContractAction,
   fetchPartieActions,
 } from "./actionJoueursSlice";
-import { ActionJoueur, CONTRAT } from "@prisma/client";
+import { ActionJoueur, Carte, CONTRAT, Joueur } from "@prisma/client";
 import { getPartieData } from "../actions/getPartieData";
 import { PartieWithRelations, StartPartieResponse } from "@/app/types/type";
 
@@ -13,6 +13,10 @@ import { PartieWithRelations, StartPartieResponse } from "@/app/types/type";
 interface PartieState {
   currentPartie: PartieWithRelations | null;
   status: string;
+}
+
+interface JoueurWithCartes extends Joueur {
+  cartes: Carte[];
 }
 
 const initialState: PartieState = {
@@ -43,8 +47,11 @@ export const startPartie = createAsyncThunk(
         throw new Error(result.error || "Une erreur est survenue.");
       }
       return result; // Retourne les données pour être intégrées dans le state Redux
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+      return rejectWithValue("Une erreur inconnue est survenue");
     }
   }
 );
@@ -56,8 +63,11 @@ export const fetchPartieData = createAsyncThunk(
       const result = await getPartieData(partieId);
 
       return result; // Retourne les données pour être intégrées dans le state Redux
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+      return rejectWithValue("Une erreur inconnue est survenue");
     }
   }
 );
@@ -74,7 +84,7 @@ const partieSlice = createSlice({
       const { joueurs, manches, chien } = action.payload;
       if (!state.currentPartie || !joueurs || !manches || !chien) return;
 
-      state.currentPartie.joueurs = joueurs.map((joueur: any) => ({
+      state.currentPartie.joueurs = joueurs.map((joueur: JoueurWithCartes) => ({
         ...joueur,
         cartes: joueur.cartes || [],
       }));
@@ -145,10 +155,12 @@ const partieSlice = createSlice({
 export const { setPartie, handleGameStarted } = partieSlice.actions;
 
 export const selectPartie = (state: RootState) => state.partie.currentPartie;
-export const selectManche = (state: any) =>
-  state.partie.currentPartie.manches[-1];
-export const selectLoading = (state: any) => state.partie.status === "loading";
-export const selectError = (state: any) => state.partie.status === "failed";
+export const selectManche = (state: RootState) =>
+  state.partie.currentPartie!.manches[-1];
+export const selectLoading = (state: RootState) =>
+  state.partie.status === "loading";
+export const selectError = (state: RootState) =>
+  state.partie.status === "failed";
 export const selectLastContract = (state: RootState): CONTRAT | null => {
   const actions = state.partie.currentPartie!.actionsJoueurs;
   if (!actions || actions.length === 0) return null;

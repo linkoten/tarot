@@ -1,6 +1,11 @@
 import Image from "next/image";
+import { ReactNode } from "react";
 
-export default function CardTable({ children }: any) {
+interface CardTableProps {
+  children: ReactNode;
+}
+
+export default function CardTable({ children }: CardTableProps) {
   return (
     <div className=" w-full h-full">
       {/* Main green background with texture */}

@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import type { JoueurWithRelations } from "../types/type";
 import { useAppSelector } from "@/lib/hooks";
 import { selectPartie } from "@/lib/features/partieSlice";
-import type { Carte, Joueur } from "@prisma/client";
+import type { Carte, Joueur, User } from "@prisma/client";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { InviteModal } from "./InviteModal";
 import StartGameButton from "./StartGameButton";
@@ -33,7 +32,15 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import GameHistory from "./GameHistory";
 
-export default function GameSeats({ currentUserId, onlineUsers }: any) {
+interface GameSeatsProps {
+  currentUserId: string;
+  onlineUsers: User[];
+}
+
+export default function GameSeats({
+  currentUserId,
+  onlineUsers,
+}: GameSeatsProps) {
   const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const currentPartie = useAppSelector(selectPartie);
@@ -60,7 +67,6 @@ export default function GameSeats({ currentUserId, onlineUsers }: any) {
     for (let i = 0; i < nombreJoueurs; i++) {
       const joueur = joueurs?.find((j: Joueur) => j.seatIndex === i);
       const isCurrentPlayer = joueur?.userId === currentUserId;
-      const isPlayerTurn = currentPartie.tourActuel === i;
 
       seats.push(
         <div

@@ -6,7 +6,23 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function serializeDecimal(obj: any): any {
+type SerializableValue =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | Prisma.Decimal
+  | SerializableObject
+  | SerializableArray;
+
+interface SerializableObject {
+  [key: string]: SerializableValue;
+}
+
+type SerializableArray = SerializableValue[];
+
+export function serializeDecimal(obj: SerializableValue): SerializableValue {
   if (obj === null || typeof obj !== "object") {
     return obj;
   }
@@ -19,10 +35,10 @@ export function serializeDecimal(obj: any): any {
     return obj.map(serializeDecimal);
   }
 
-  const result: { [key: string]: any } = {};
-  for (const key in obj) {
+  const result: SerializableObject = {};
+  for (const key in obj as SerializableObject) {
     if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      result[key] = serializeDecimal(obj[key]);
+      result[key] = serializeDecimal((obj as SerializableObject)[key]);
     }
   }
   return result;

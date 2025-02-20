@@ -6,7 +6,7 @@ import { Carte } from "@prisma/client";
 export async function createPreneurPli(
   mancheId: number,
   preneurId: string,
-  newCartes: any
+  newCartes: Carte[]
 ) {
   try {
     const existingPli = await prisma.pliPreneur.findUnique({
@@ -58,7 +58,7 @@ export async function createPreneurPli(
   }
 }
 
-export async function createDefenseurPli(mancheId: number, newCartes: any) {
+export async function createDefenseurPli(mancheId: number, newCartes: Carte[]) {
   try {
     const existingPli = await prisma.pliDefenseur.findUnique({
       where: { mancheId },

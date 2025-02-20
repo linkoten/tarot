@@ -33,11 +33,7 @@ export default function TableDeJeu({
 
   return (
     <>
-      <GameSeats
-        partie={currentPartie}
-        currentUserId={currentUserId}
-        onlineUsers={onlineUsers}
-      />
+      <GameSeats currentUserId={currentUserId} onlineUsers={onlineUsers} />
       <SocketTest roomId={partie.id} />
     </>
   );

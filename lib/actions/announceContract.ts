@@ -1,6 +1,6 @@
 "use server";
 
-import { CONTRAT } from "@prisma/client";
+import { ActionJoueur, CONTRAT } from "@prisma/client";
 import { prisma } from "../db";
 import { distributeCards } from "./distributeCards";
 
@@ -74,7 +74,7 @@ export async function announceContract(
         ? CONTRACT_RANKS[highest.action as keyof typeof CONTRACT_RANKS]
         : -1;
       return currentRank > highestRank ? action : highest;
-    }, null as any);
+    }, null as ActionJoueur | null);
 
     if (highestBidSoFar && action !== "PASSE") {
       const lastContractRank =
