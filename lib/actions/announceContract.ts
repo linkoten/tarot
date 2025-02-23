@@ -28,7 +28,6 @@ export async function announceContract(
         },
         manches: {
           orderBy: { numero: "asc" },
-          take: 1,
           include: {
             actionsJoueurs: {
               orderBy: { createdAt: "asc" },
@@ -59,6 +58,9 @@ export async function announceContract(
     }
 
     const currentManche = partie.manches[partie.manches.length - 1];
+
+    console.log("currentManche", currentManche);
+    console.log("quelle manche ?", partie.manches.length);
     const { nombreJoueurs } = partie;
 
     // Vérifier si un contrat plus élevé a déjà été annoncé
@@ -66,7 +68,13 @@ export async function announceContract(
       (a) => a.mancheId === currentManche.id
     );
 
-    const highestBidSoFar = mancheActions.reduce((highest, action) => {
+    const currentMancheActions = mancheActions.filter(
+      (action) => action.mancheId === currentManche.id
+    );
+
+    console.log("currentMancheAction", currentMancheActions);
+
+    const highestBidSoFar = currentMancheActions.reduce((highest, action) => {
       if (action.action === "PASSE") return highest;
       const currentRank =
         CONTRACT_RANKS[action.action as keyof typeof CONTRACT_RANKS];
@@ -108,10 +116,9 @@ export async function announceContract(
         },
       });
 
-      const firstPlayerIndex = (partie.donneur + 1) % nombreJoueurs;
       await prisma.partie.update({
         where: { id: partieId },
-        data: { tourActuel: firstPlayerIndex },
+        data: { tourActuel: partie.donneur },
       });
 
       return {
@@ -223,14 +230,10 @@ export async function announceContract(
             },
           });
 
-          // Si GARDESANS, positionner sur le premier joueur
-          if (winningBid.action === "GARDESANS") {
-            const firstPlayerIndex = (partie.donneur + 1) % nombreJoueurs;
-            await prisma.partie.update({
-              where: { id: partieId },
-              data: { tourActuel: firstPlayerIndex },
-            });
-          }
+          await prisma.partie.update({
+            where: { id: partieId },
+            data: { tourActuel: partie.donneur },
+          });
 
           return {
             success: true,
@@ -241,11 +244,13 @@ export async function announceContract(
     }
 
     // Passer au joueur suivant si la manche continue
-    const nextPlayerIndex = (currentPlayerIndex + 1) % nombreJoueurs;
-    await prisma.partie.update({
-      where: { id: partieId },
-      data: { tourActuel: nextPlayerIndex },
-    });
+    else {
+      const nextPlayerIndex = (currentPlayerIndex + 1) % nombreJoueurs;
+      await prisma.partie.update({
+        where: { id: partieId },
+        data: { tourActuel: nextPlayerIndex },
+      });
+    }
 
     return { success: true, message: "Action recorded", action: newAction };
   } catch (error) {

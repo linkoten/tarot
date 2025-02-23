@@ -12,6 +12,7 @@ export async function handleChien(
     const manche = await prisma.manche.findFirst({
       where: { partieId, preneurId },
       include: { chien: { include: { cartes: true } } },
+      orderBy: { numero: "desc" },
     });
 
     if (!manche || !manche.chien) throw new Error("Manche or chien not found");
@@ -31,6 +32,9 @@ export async function handleChien(
         ...preneur.cartes.map((card) => card.id),
         ...manche.chien.cartes.map((card) => card.id),
       ];
+
+      console.log("allAvailableCards", allAvailableCards);
+      console.log("manche", manche);
 
       if (
         !cardsToDiscard.every((cardId) => allAvailableCards.includes(cardId))

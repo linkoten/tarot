@@ -61,24 +61,7 @@ export default function GamePlay({ partieId, currentUserId }: GamePlayProps) {
         });
 
         await dispatch(fetchPartieData(currentPartie.id)).unwrap();
-
-        if (playedCard) {
-          toast({
-            title: "Carte jouée",
-            description: (
-              <div className="flex items-center">
-                <Image
-                  src={playedCard.image1 || "/placeholder.svg"}
-                  alt={playedCard.nom}
-                  width={40}
-                  height={60}
-                  className="mr-2"
-                />
-                <span>{playedCard.nom} a été jouée</span>
-              </div>
-            ),
-          });
-        }
+        setMessage("");
       } else {
         setMessage(result.error || "Failed to play card");
       }

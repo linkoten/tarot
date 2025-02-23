@@ -1,10 +1,12 @@
-import React from "react";
-import { useEffect, useState } from "react";
+"use client";
+
+import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import socket from "../socket";
-import { PartieWithRelations } from "../types/type";
-import { Carte, CONTRAT } from "@prisma/client";
+import type { PartieWithRelations } from "../types/type";
+import type { Carte, CONTRAT } from "@prisma/client";
 import Image from "next/image";
+import { TextAnimate } from "@/components/magicui/text-animate";
 
 interface HistoryAction {
   id: string;
@@ -27,8 +29,10 @@ interface GameHistoryProps {
 
 const GameHistory = ({ partie }: GameHistoryProps) => {
   const [actions, setActions] = useState<HistoryAction[]>([]);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   console.log(actions);
+
   useEffect(() => {
     function onGameStarted() {
       addAction("gameStart", "La partie a commencé !");
@@ -113,9 +117,13 @@ const GameHistory = ({ partie }: GameHistoryProps) => {
     };
   }, [partie]);
 
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [actions]);
+
   return (
     <div className="space-y-2">
-      {actions.map((action) => (
+      {actions.map((action, index) => (
         <motion.div
           key={action.id}
           initial={{ opacity: 0, y: 20 }}
@@ -132,13 +140,20 @@ const GameHistory = ({ partie }: GameHistoryProps) => {
             />
           )}
           <div>
-            <p className="text-sm">{action.message}</p>
-            <span className="text-xs text-zinc-400">
+            {index === actions.length - 1 ? (
+              <TextAnimate animation="blurInUp" by="character" once>
+                {action.message}
+              </TextAnimate>
+            ) : (
+              <span>{action.message}</span>
+            )}
+            <span className="text-xs text-zinc-400 block">
               {new Date(action.timestamp).toLocaleTimeString()}
             </span>
           </div>
         </motion.div>
       ))}
+      <div ref={bottomRef} />
     </div>
   );
 };

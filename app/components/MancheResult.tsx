@@ -48,18 +48,15 @@ export function MancheResult() {
               <p>
                 Bouts: {countCards(derniereManche.pliPreneur?.cartes, "bout")}
               </p>
+              <p>Rois: {countCards(derniereManche.pliPreneur?.cartes, "14")}</p>
               <p>
-                Rois: {countCards(derniereManche.pliPreneur?.cartes, "roi")}
+                Dames: {countCards(derniereManche.pliPreneur?.cartes, "13")}
               </p>
               <p>
-                Dames: {countCards(derniereManche.pliPreneur?.cartes, "dame")}
+                Cavaliers: {countCards(derniereManche.pliPreneur?.cartes, "12")}
               </p>
               <p>
-                Cavaliers:{" "}
-                {countCards(derniereManche.pliPreneur?.cartes, "cavalier")}
-              </p>
-              <p>
-                Valets: {countCards(derniereManche.pliPreneur?.cartes, "valet")}
+                Valets: {countCards(derniereManche.pliPreneur?.cartes, "11")}
               </p>
             </CardContent>
           </Card>
@@ -73,18 +70,17 @@ export function MancheResult() {
                 Bouts: {countCards(derniereManche.pliDefenseur?.cartes, "bout")}
               </p>
               <p>
-                Rois: {countCards(derniereManche.pliDefenseur?.cartes, "roi")}
+                Rois: {countCards(derniereManche.pliDefenseur?.cartes, "14")}
               </p>
               <p>
-                Dames: {countCards(derniereManche.pliDefenseur?.cartes, "dame")}
+                Dames: {countCards(derniereManche.pliDefenseur?.cartes, "13")}
               </p>
               <p>
                 Cavaliers:{" "}
-                {countCards(derniereManche.pliDefenseur?.cartes, "cavalier")}
+                {countCards(derniereManche.pliDefenseur?.cartes, "12")}
               </p>
               <p>
-                Valets:{" "}
-                {countCards(derniereManche.pliDefenseur?.cartes, "valet")}
+                Valets: {countCards(derniereManche.pliDefenseur?.cartes, "11")}
               </p>
             </CardContent>
           </Card>

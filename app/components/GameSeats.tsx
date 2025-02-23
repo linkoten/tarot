@@ -44,12 +44,18 @@ export default function GameSeats({
   const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const currentPartie = useAppSelector(selectPartie);
+  const [isBlinking, setIsBlinking] = useState(false);
+  const [blinkIntervalId, setBlinkIntervalId] = useState<NodeJS.Timeout | null>(
+    null
+  );
 
   if (!currentPartie) return null;
 
   const { joueurs, nombreJoueurs } = currentPartie;
 
   console.log(currentPartie);
+
+  const playerTurn = currentPartie.tourActuel;
 
   const handleSeatClick = (seatIndex: number, joueur?: JoueurWithRelations) => {
     if (!joueur) {
@@ -67,6 +73,7 @@ export default function GameSeats({
     for (let i = 0; i < nombreJoueurs; i++) {
       const joueur = joueurs?.find((j: Joueur) => j.seatIndex === i);
       const isCurrentPlayer = joueur?.userId === currentUserId;
+      const isPlayerTurn = joueur?.seatIndex === playerTurn;
 
       seats.push(
         <div
@@ -80,7 +87,9 @@ export default function GameSeats({
         >
           <div className="relative">
             <ShimmerButton
-              className="w-14 h-14 rounded-full flex items-center justify-center text-xs"
+              className={`w-14 h-14 rounded-full flex items-center justify-center text-xs${
+                isPlayerTurn ? " scale-125 " : ""
+              }`}
               onClick={() => handleSeatClick(i, joueur as JoueurWithRelations)}
             >
               {joueur ? joueur.pseudo : "Inviter"}

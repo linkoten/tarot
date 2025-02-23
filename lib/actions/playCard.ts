@@ -13,7 +13,7 @@ export async function playCard(
     const partie = await prisma.partie.findUnique({
       where: { id: partieId },
       include: {
-        joueurs: { include: { cartes: true } },
+        joueurs: { include: { cartes: true }, orderBy: { seatIndex: "asc" } },
         manches: {
           orderBy: { numero: "desc" },
           take: 1,
@@ -35,6 +35,9 @@ export async function playCard(
     const currentManche = partie.manches[partie.manches.length - 1];
     const currentPlayerIndex = partie.tourActuel;
     const currentPlayer = partie.joueurs[currentPlayerIndex];
+
+    console.log("test1", partie.tourActuel);
+    console.log("currentPlayer", currentPlayer);
 
     const currentPlayerData = partie.joueurs.find(
       (joueur) => joueur.userId === joueurId
@@ -79,7 +82,14 @@ export async function playCard(
       console.log("leadCard", leadCard);
       const playerCards = currentPlayer.cartes;
 
-      if (!canPlayCard(playedCard, leadCard, playerCards)) {
+      if (
+        !canPlayCard(
+          playedCard,
+          leadCard,
+          playerCards,
+          currentManche.currentPli.cartes
+        )
+      ) {
         console.log("Cards info", playedCard, leadCard, playerCards);
         throw new Error("This card cannot be played according to the rules");
       }
@@ -336,7 +346,8 @@ export async function playCard(
 function canPlayCard(
   playedCard: Carte,
   leadCard: Carte,
-  playerCards: Carte[]
+  playerCards: Carte[],
+  currentPli: Carte[]
 ): boolean {
   // L'excuse peut toujours être jouée
   if (playedCard.couleur === "EXCUSE") {
@@ -344,8 +355,8 @@ function canPlayCard(
   }
 
   // Si l'excuse est en premier, on prend la première carte non-excuse comme leadCard
-  if (leadCard.couleur === "EXCUSE") {
-    const actualLeadCard = playerCards.find((c) => c.couleur !== "EXCUSE");
+  if (leadCard.couleur === "EXCUSE" && currentPli.length > 1) {
+    const actualLeadCard = currentPli[1];
     if (actualLeadCard) {
       leadCard = actualLeadCard;
     } else {

@@ -40,13 +40,18 @@ export default function ContractAnnouncement({
   const mancheId = currentPartie?.manches[currentPartie.manches.length - 1].id;
 
   useEffect(() => {
-    if (lastContract && actionsJoueursLinkToManche?.mancheId === mancheId) {
+    if (
+      lastContract &&
+      actionsJoueursLinkToManche?.mancheId === mancheId &&
+      actionsJoueursLinkToManche?.action !== "PASSE" // 🔥 Éviter la passe qui bloque
+    ) {
       const lastContractIndex = contractOrder.indexOf(lastContract);
       setAvailableContracts([
         "PASSE",
         ...contractOrder.slice(lastContractIndex + 1),
       ]);
     } else {
+      // 🟢 Si c'est une nouvelle manche ou tout le monde a passé → Réinitialiser
       setAvailableContracts(contractOrder);
     }
   }, [lastContract, actionsJoueursLinkToManche, mancheId]);
