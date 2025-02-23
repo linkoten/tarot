@@ -33,9 +33,6 @@ export async function handleChien(
         ...manche.chien.cartes.map((card) => card.id),
       ];
 
-      console.log("allAvailableCards", allAvailableCards);
-      console.log("manche", manche);
-
       if (
         !cardsToDiscard.every((cardId) => allAvailableCards.includes(cardId))
       ) {

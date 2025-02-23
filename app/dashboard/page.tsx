@@ -11,7 +11,6 @@ import CreateGameButtons from "../components/CreateGameButton";
 export default async function DashboardPage() {
   const { userId } = await auth();
 
-  console.log(userId);
   if (!userId) {
     redirect("/");
   }

@@ -19,11 +19,8 @@ export default function GamePlay({ partieId, currentUserId }: GamePlayProps) {
 
   useEffect(() => {
     function onNewCardPlayed(data: { partieId: number }) {
-      console.log("La carte a été jouée", data.partieId);
-
       try {
         dispatch(fetchPartieData(data.partieId));
-        console.log("fetchPartieData appelé avec succès !");
       } catch (error) {
         console.error("Erreur lors de fetchPartieData :", error);
       }

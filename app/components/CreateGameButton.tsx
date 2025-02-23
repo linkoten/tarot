@@ -15,12 +15,10 @@ export default function CreateGameButtons() {
 
   const joinRoom = (partieId: number) => {
     socket.emit("joinRoom", partieId);
-    console.log("Joining room:", partieId);
   };
 
   useEffect(() => {
     function onUserJoined(data: { userId: string; roomId: number }) {
-      console.log(`User ${data.userId} joined room ${data.roomId}`);
       dispatch(fetchPartieData(data.roomId));
     }
 

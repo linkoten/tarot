@@ -49,16 +49,12 @@ export default function GameSeats({
 
   const { joueurs, nombreJoueurs } = currentPartie;
 
-  console.log(currentPartie);
-
   const playerTurn = currentPartie.tourActuel;
 
   const handleSeatClick = (seatIndex: number, joueur?: JoueurWithRelations) => {
     if (!joueur) {
       setSelectedSeat(seatIndex);
       setIsInviteModalOpen(true);
-    } else {
-      console.log(`Seat ${seatIndex} est occupé par ${joueur.pseudo}`);
     }
     const roomId = currentPartie.id;
     socket.emit("joinRoom", { roomId, userId: joueur?.id || "anonymous" });

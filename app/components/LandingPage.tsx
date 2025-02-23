@@ -15,7 +15,7 @@ export default function LandingPage() {
           transition={{ duration: 0.5 }}
           className="text-2xl font-bold"
         >
-          Tarot Mystique
+          Tarot
         </motion.h1>
         <nav>
           <Button variant="ghost" asChild className="hover:bg-green-800">
@@ -32,7 +32,7 @@ export default function LandingPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-5xl font-bold mb-4"
           >
-            Discover the Magic of Tarot
+            Découvrez le jeu du tarot
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: -20 }}
@@ -40,7 +40,7 @@ export default function LandingPage() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="text-xl mb-8"
           >
-            Unlock the secrets of the cards and explore your destiny
+            Retrouvez l&apos;ambiance du tarot traditionnel sur votre ordinateur
           </motion.p>
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -52,7 +52,9 @@ export default function LandingPage() {
               size="lg"
               className="bg-green-600 hover:bg-green-700"
             >
-              <Link href="/dashboard">Start Your Journey</Link>
+              <Link href="/dashboard">
+                Connectez vous afin de créer une partie
+              </Link>
             </Button>
           </motion.div>
         </section>
@@ -98,7 +100,7 @@ export default function LandingPage() {
 
       <footer className="bg-green-950 py-8">
         <div className="container mx-auto px-4 text-center">
-          <p>&copy; 2023 Tarot Mystique. All rights reserved.</p>
+          <p>&copy; 2025 Tarot En Ligne.</p>
           <div className="mt-4">
             <Link
               href="/about"

@@ -59,8 +59,6 @@ export async function announceContract(
 
     const currentManche = partie.manches[partie.manches.length - 1];
 
-    console.log("currentManche", currentManche);
-    console.log("quelle manche ?", partie.manches.length);
     const { nombreJoueurs } = partie;
 
     // Vérifier si un contrat plus élevé a déjà été annoncé
@@ -71,8 +69,6 @@ export async function announceContract(
     const currentMancheActions = mancheActions.filter(
       (action) => action.mancheId === currentManche.id
     );
-
-    console.log("currentMancheAction", currentMancheActions);
 
     const highestBidSoFar = currentMancheActions.reduce((highest, action) => {
       if (action.action === "PASSE") return highest;

@@ -40,7 +40,6 @@ export function InviteModal({
       if (!currentUserId) {
         throw new Error("User not authenticated.");
       }
-      console.log("le gars invité", invitedUserId);
 
       const result = await invitePlayer(
         partieId,

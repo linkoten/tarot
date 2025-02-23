@@ -19,8 +19,6 @@ export default async function PartiePage({
     const user = await getUserByClerkId(clerkUserId);
     const partie = await getPartieById(Number(params.partieId));
 
-    console.log("la partie", partie);
-
     if (!partie) {
       redirect("/dashboard");
     }

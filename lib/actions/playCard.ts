@@ -36,9 +36,6 @@ export async function playCard(
     const currentPlayerIndex = partie.tourActuel;
     const currentPlayer = partie.joueurs[currentPlayerIndex];
 
-    console.log("test1", partie.tourActuel);
-    console.log("currentPlayer", currentPlayer);
-
     const currentPlayerData = partie.joueurs.find(
       (joueur) => joueur.userId === joueurId
     );
@@ -46,11 +43,6 @@ export async function playCard(
     if (!currentPlayerData) {
       throw new Error(`Aucun joueur trouvé avec userId : ${joueurId}`);
     }
-
-    console.log("Joueur courant:", {
-      id: currentPlayerData.id,
-      userId: currentPlayerData.userId,
-    });
 
     const currentPlayerId = currentPlayerData.id;
     const currentPlayerUserId = currentPlayerData.userId;
@@ -65,8 +57,6 @@ export async function playCard(
 
     if (!playedCard) throw new Error("Card not found");
 
-    console.log("Carte jouée:", playedCard);
-
     // Vérifier si la carte peut être jouée selon les règles
     if (
       currentManche.currentPli &&
@@ -79,7 +69,6 @@ export async function playCard(
           .find((card) => card.couleur !== "EXCUSE") ||
         currentManche.currentPli.cartes[0];
 
-      console.log("leadCard", leadCard);
       const playerCards = currentPlayer.cartes;
 
       if (
@@ -90,13 +79,9 @@ export async function playCard(
           currentManche.currentPli.cartes
         )
       ) {
-        console.log("Cards info", playedCard, leadCard, playerCards);
         throw new Error("This card cannot be played according to the rules");
       }
     }
-
-    console.log("test", playedCard);
-    console.log("les joueurs", joueurId, currentPlayerId);
 
     // Ajouter la carte au pli courant
 
@@ -121,7 +106,6 @@ export async function playCard(
         joueurs: { include: { cartes: true } },
       },
     });
-    console.log("Pli courant mis à jour:", updatedCurrentPli);
 
     await prisma.$transaction(async (prisma) => {
       // Récupérer le pli courant s'il existe
@@ -185,25 +169,13 @@ export async function playCard(
       data: { tourActuel: nextPlayerIndex },
     });
 
-    console.log(
-      "legnth",
-      updatedCurrentPli.cartes.length,
-      partie.nombreJoueurs
-    );
-
     // Vérifier si c'est la fin du pli
     if (updatedCurrentPli.cartes.length === partie.nombreJoueurs) {
       const winningCard = getWinningCard(updatedCurrentPli.cartes);
 
-      console.log("All cards in the pli:", updatedCurrentPli.cartes);
-      console.log("Winning card:", winningCard);
-
       const winningPlayer = partie.joueurs.find((joueur) =>
         joueur.cartes.some((carte) => carte.id === winningCard.id)
       );
-
-      // console.log("All players:", partie.joueurs);
-      console.log("Winning player:", winningPlayer);
 
       if (winningPlayer) {
         const excuseCard = updatedCurrentPli.cartes.find(
@@ -384,7 +356,6 @@ function getWinningCard(cards: Carte[]): Carte {
   // ✅ 1️⃣ Déterminer la leadCard (première carte non-Excuse)
   // On la cherche dans l'ordre des cartes jouées
   const leadCard = cards.find((card) => card.couleur !== "EXCUSE") || cards[0];
-  console.log("LeadCard correcte :", leadCard);
 
   let winningCard = leadCard;
   let highestAtout: Carte | null = null;

@@ -30,14 +30,8 @@ export default function EchangeChien({
 
   useEffect(() => {
     function onNewExchangeChien(data: { partieId: number }) {
-      console.log(
-        "on reçoit les infos de l'échange des cartes du chien de la part du serveur",
-        data.partieId
-      );
-
       try {
         dispatch(fetchPartieData(data.partieId));
-        console.log("fetchPartieData appelé avec succès !");
       } catch (error) {
         console.error("Erreur lors de fetchPartieData :", error);
       }

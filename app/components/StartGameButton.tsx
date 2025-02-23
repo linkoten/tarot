@@ -20,10 +20,8 @@ export default function StartGameButton() {
 
   useEffect(() => {
     function onGameStarted(data: { partieId: number }) {
-      console.log("on reçoit les infos de la part du serveur", data.partieId);
       try {
         dispatch(fetchPartieData(data.partieId));
-        console.log("fetchPartieData appelé avec succès !");
       } catch (error) {
         console.error("Erreur lors de fetchPartieData :", error);
       }
@@ -47,7 +45,6 @@ export default function StartGameButton() {
     if (currentPartie.id) {
       await distributeCards(currentPartie.id);
       socket.emit("startGame", currentPartie.id);
-      console.log("Game started successfully:");
       await dispatch(fetchPartieData(currentPartie.id));
     }
   };

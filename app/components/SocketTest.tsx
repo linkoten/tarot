@@ -74,14 +74,12 @@ export default function SocketTest({ roomId }: { roomId: number }) {
   const joinRoom = () => {
     if (roomId) {
       socket.emit("joinRoom", roomId);
-      console.log("Joining room:", roomId);
     }
   };
 
   const leaveRoom = () => {
     if (roomId) {
       socket.emit("leaveRoom", roomId);
-      console.log("Leaving room:", roomId);
       // setRoomId("");
       setMessages([]);
     }
@@ -90,7 +88,6 @@ export default function SocketTest({ roomId }: { roomId: number }) {
   const sendMessage = () => {
     if (roomId && message) {
       socket.emit("sendMessage", { roomId, message });
-      console.log("Sending message:", message, "to room:", roomId);
       setMessage("");
     }
   };
@@ -98,14 +95,12 @@ export default function SocketTest({ roomId }: { roomId: number }) {
   const newPlayer = () => {
     if (roomId) {
       socket.emit("newPlayer", roomId);
-      console.log("Nouveau Joueur:", roomId);
       dispatch(fetchPartieData(roomId)).unwrap();
     }
   };
 
   useEffect(() => {
     socket.on("newPlayerAdded", (data) => {
-      console.log("New Player added to the game:", data);
       dispatch(fetchPartieData(data.partieId));
     });
 
@@ -113,32 +108,6 @@ export default function SocketTest({ roomId }: { roomId: number }) {
       socket.off("newPlayerAdded");
     };
   }, [dispatch, newPlayer]);
-
-  /* useEffect(() => {
-    socket.on("gameStarted", (data) => {
-      console.log("Game started:", data);
-      // dispatch(fetchPartieData(data.partieId));
-    });
-
-    socket.connect();
-
-    return () => {
-      socket.off("gameStarted");
-    };
-  }, [dispatch, startGame]); */
-
-  /* const announceContract = () => {
-    if (roomId) {
-      socket.emit("newContract", roomId, (response: any) => {
-        if (response.success) {
-          console.log("Game started successfully:", response.data);
-          dispatch(startPartie(roomId)).unwrap();
-        } else {
-          console.error("Error starting game:", response.error);
-        }
-      });
-    }
-  }; */
 
   if (!currentPartie) {
     console.error("Aucune partie sélectionnée.");

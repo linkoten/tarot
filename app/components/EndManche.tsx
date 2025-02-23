@@ -40,14 +40,8 @@ export default function EndManche({ partieId }: EndMancheProps) {
 
   useEffect(() => {
     function onNewManche(data: { partieId: number }) {
-      console.log(
-        "on reçoit les infos de la nouvelle manche de la part du serveur",
-        data.partieId
-      );
-
       try {
         dispatch(fetchPartieData(data.partieId));
-        console.log("fetchPartieData appelé avec succès !");
       } catch (error) {
         console.error("Erreur lors de fetchPartieData :", error);
       }

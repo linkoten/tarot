@@ -32,7 +32,6 @@ export function InvitationListener({
   const joinRoom = (response: InvitationResponse) => {
     if (response.invitation?.partieId) {
       socket.emit("joinRoom", response.invitation?.partieId);
-      console.log("Joining room 2:", response.invitation?.partieId);
     }
   };
 
@@ -55,7 +54,6 @@ export function InvitationListener({
       userName: string;
       partieId: number;
     }) => {
-      console.log("New player added:", data);
       dispatch(fetchPartieData(data.partieId));
     };
 

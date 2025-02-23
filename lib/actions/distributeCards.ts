@@ -77,9 +77,6 @@ export async function distributeCards(partieId: number) {
       const chienCards = shuffledCards.slice(72);
       const updatedJoueurs: (Joueur & { cartes: Carte[] })[] = [];
 
-      console.log("Total cards:", shuffledCards.length); // Doit être 78
-      console.log("Players:", partie.joueurs.length); // Doit correspondre au nombre de joueurs dans la partie
-
       for (let i = 0; i < partie.joueurs.length; i++) {
         const playerCards = shuffledCards.slice(
           i * cardsPerPlayer,
@@ -110,12 +107,6 @@ export async function distributeCards(partieId: number) {
         },
         include: { cartes: true },
       });
-
-      console.log(
-        "Total distributed to players:",
-        updatedJoueurs.reduce((sum, j) => sum + j.cartes.length, 0)
-      );
-      console.log("Chien cards:", chienCards.length); // Doit être 6
 
       // Mettre à jour le statut de la partie
       await prisma.partie.update({

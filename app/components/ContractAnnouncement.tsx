@@ -63,7 +63,6 @@ export default function ContractAnnouncement({
       userName: string;
       contract: CONTRAT;
     }) {
-      console.log("Contract info received from server", data);
       try {
         dispatch(fetchPartieData(data.partieId));
       } catch (error) {

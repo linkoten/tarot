@@ -32,14 +32,11 @@ export async function calculatePoints(mancheId: number, nombreJoueurs: number) {
     },
   });
 
-  console.log("Manche fetched:", manche);
-
   if (!manche) throw new Error("Manche not found");
 
   const { pliPreneur, contrat, preneur, joueurs } = manche;
   if (!pliPreneur) return;
   const nombreBouts = pliPreneur.cartes.filter((carte) => carte.bout).length;
-  console.log("Nombre de bouts:", nombreBouts);
 
   // Compter les cartes spéciales
   const cartesPenalite = [
@@ -54,7 +51,6 @@ export async function calculatePoints(mancheId: number, nombreJoueurs: number) {
   ];
 
   const pointsPreneur = pliPreneur?.points - cartesPenalite.length * 0.5;
-  console.log("Points preneur:", pointsPreneur);
 
   const pointsRequis = {
     0: 56,
@@ -62,12 +58,10 @@ export async function calculatePoints(mancheId: number, nombreJoueurs: number) {
     2: 41,
     3: 36,
   }[nombreBouts];
-  console.log("Points requis:", pointsRequis);
 
   if (!pointsRequis) return;
 
   const difference = pointsPreneur - pointsRequis;
-  console.log("Différence:", difference);
 
   const basePoints = 25;
   const bonusPoints = Math.abs(difference);
@@ -81,19 +75,15 @@ export async function calculatePoints(mancheId: number, nombreJoueurs: number) {
   }[contrat as CONTRAT];
 
   const totalPoints = basePoints * contractMultiplier + bonusPoints;
-  console.log("Total points:", totalPoints);
 
   const nombreDefenseur = nombreJoueurs - 1;
-
-  console.log("Nombre Defenseur:", nombreDefenseur);
 
   const isSuccess = difference >= 0;
   const preneurScore = isSuccess
     ? totalPoints * nombreDefenseur
     : -totalPoints * nombreDefenseur;
   const defenseurScore = isSuccess ? -totalPoints : totalPoints;
-  console.log("Score preneur:", preneurScore);
-  console.log("Score défenseur:", defenseurScore);
+
   // Update manche
   await prisma.manche.update({
     where: { id: mancheId },
@@ -112,8 +102,6 @@ export async function calculatePoints(mancheId: number, nombreJoueurs: number) {
       where: { id: joueur.id },
       data: { score: { increment: scoreToAdd } },
     });
-    console.log(`Score updated for joueur ${joueur.id}`);
   }
-  console.log("Final result:", { preneurScore, defenseurScore, isSuccess });
   return { preneurScore, defenseurScore, isSuccess };
 }
