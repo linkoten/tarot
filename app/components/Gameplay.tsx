@@ -6,8 +6,6 @@ import { fetchPartieData, selectPartie } from "@/lib/features/partieSlice";
 import { playCard } from "@/lib/actions/playCard";
 import socket from "../socket";
 import PlayerCards from "./PlayerCards";
-import Image from "next/image";
-import { useToast } from "@/hooks/use-toast";
 
 interface GamePlayProps {
   partieId: number;
@@ -18,7 +16,6 @@ export default function GamePlay({ partieId, currentUserId }: GamePlayProps) {
   const dispatch = useAppDispatch();
   const currentPartie = useAppSelector(selectPartie);
   const [message, setMessage] = useState<string | null>(null);
-  const { toast } = useToast();
 
   useEffect(() => {
     function onNewCardPlayed(data: { partieId: number }) {

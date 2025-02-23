@@ -44,10 +44,6 @@ export default function GameSeats({
   const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const currentPartie = useAppSelector(selectPartie);
-  const [isBlinking, setIsBlinking] = useState(false);
-  const [blinkIntervalId, setBlinkIntervalId] = useState<NodeJS.Timeout | null>(
-    null
-  );
 
   if (!currentPartie) return null;
 
