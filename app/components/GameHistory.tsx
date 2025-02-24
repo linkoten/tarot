@@ -31,8 +31,6 @@ const GameHistory = ({ partie }: GameHistoryProps) => {
   const [actions, setActions] = useState<HistoryAction[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  console.log(actions);
-
   useEffect(() => {
     function onGameStarted() {
       addAction("gameStart", "La partie a commencé !");
@@ -66,7 +64,6 @@ const GameHistory = ({ partie }: GameHistoryProps) => {
         (j) => j.userId === data.currentUserId
       );
 
-      console.log(data);
       addAction(
         "cardPlayed",
         `${joueur?.pseudo} a joué ${data.playedCard.nom}`,
