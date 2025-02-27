@@ -202,7 +202,10 @@ export default function GameSeats({
                 <div className="p-4">
                   <BorderBeam className="rounded-sm" />
 
-                  <GameHistory partie={currentPartie} />
+                  <GameHistory
+                    partie={currentPartie}
+                    currentUserId={currentUserId}
+                  />
                 </div>
               </ScrollArea>
             </CardContent>

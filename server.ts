@@ -51,11 +51,6 @@ io.on("connection", (socket) => {
     io.to(roomId).emit("userLeft", { userId: socket.id, roomId });
   });
 
-  socket.on("sendMessage", ({ roomId, message }) => {
-    console.log(`Message in room ${roomId}:`, message);
-    io.to(roomId).emit("newMessage", { userId: socket.id, message });
-  });
-
   socket.on("startGame", (roomId) => {
     console.log("on reçoit les infos de la part du client", roomId);
     io.to(roomId).emit("gameStarted", { partieId: roomId });
@@ -99,6 +94,15 @@ io.on("connection", (socket) => {
   socket.on("exchangeChien", (roomId) => {
     console.log("Chien exchanged in room", roomId);
     io.to(roomId).emit("newExchangeChien", { partieId: roomId });
+  });
+
+  socket.on("sendMessage", ({ currentUserId, partieId, message }) => {
+    console.log(`Message in room ${partieId}:`, message);
+    io.to(partieId).emit("newMessage", {
+      currentUserId,
+      partieId,
+      message,
+    });
   });
 
   socket.on("cardPlayed", ({ roomId, playedCard, currentUserId }) => {
